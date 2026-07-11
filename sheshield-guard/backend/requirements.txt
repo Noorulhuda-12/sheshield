@@ -1,0 +1,12 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+opencv-python>=4.9
+ultralytics>=8.2
+numpy>=1.26
+lapx>=0.5.5        # ByteTrack dependency used by ultralytics tracking
+python-multipart
+# Optional - real alert channels (system runs without them, logging simulated alerts):
+# twilio>=9.0
+# Optional - production DB:
+# psycopg2-binary

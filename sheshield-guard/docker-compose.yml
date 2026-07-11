@@ -1,0 +1,27 @@
+# Dev-friendly compose. For webcams you must pass the device through
+# (Linux: devices: ["/dev/video0:/dev/video0"]); RTSP/file sources work as-is.
+services:
+  backend:
+    build: ./backend
+    ports: ["8000:8000"]
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:////data/sheshield.db}
+      - EVIDENCE_DIR=/data/evidence
+      - TWILIO_SID=${TWILIO_SID:-}
+      - TWILIO_TOKEN=${TWILIO_TOKEN:-}
+      - TWILIO_FROM=${TWILIO_FROM:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+    volumes:
+      - shesdata:/data
+      - ./weights:/app/weights   # drop trained model weights here
+    # devices: ["/dev/video0:/dev/video0"]   # uncomment for a local webcam
+
+  frontend:
+    build: ./frontend
+    ports: ["5173:5173"]
+    depends_on: [backend]
+
+volumes:
+  shesdata:

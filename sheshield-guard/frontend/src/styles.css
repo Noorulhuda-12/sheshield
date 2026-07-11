@@ -1,0 +1,97 @@
+/* SheShield-Guard design tokens
+   ink:      #0B1220 (app bg)   surface: #111C30   line: #22314D
+   text:     #E8ECF4            muted:   #8FA0BC
+   guard:    #1AAE6F (brand green - all-clear / actions)
+   suspect:  #F5A524 (amber)    critical:#E5484D (red)   station:#5B8DEF
+   Type: Space Grotesk (display) / IBM Plex Sans (body) / IBM Plex Mono (data) */
+
+:root {
+  --ink: #0B1220; --surface: #111C30; --surface-2: #16233C; --line: #22314D;
+  --text: #E8ECF4; --muted: #8FA0BC;
+  --guard: #1AAE6F; --suspect: #F5A524; --critical: #E5484D; --station: #5B8DEF;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--text);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; }
+.mono { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+code { font-family: 'IBM Plex Mono', monospace; color: var(--guard); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--guard); outline-offset: 2px; }
+
+.shell { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Top bar */
+.topbar { display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand__mark { color: var(--guard); font-size: 14px; }
+.brand__name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: .3px; }
+.brand__name em { font-style: normal; color: var(--guard); }
+.brand__sub { color: var(--muted); font-size: 12px; }
+.topbar__status { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot--ok { background: var(--guard); box-shadow: 0 0 8px var(--guard); }
+.dot--bad { background: var(--critical); }
+.pendingpill { background: var(--critical); color: #fff; border-radius: 999px;
+  padding: 2px 10px; font-weight: 600; }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: 1fr 360px; gap: 16px; padding: 16px 20px; flex: 1; }
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+/* Camera grid */
+.cams { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; align-content: start; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.tile--suspect { border-color: var(--suspect); }
+.tile--critical { border-color: var(--critical); animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(229,72,77,.45); } 50% { box-shadow: 0 0 0 6px rgba(229,72,77,0); } }
+@media (prefers-reduced-motion: reduce) { .tile--critical { animation: none; box-shadow: 0 0 0 2px var(--critical); } }
+.tile__head { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; }
+.tile__name { font-weight: 600; }
+.badge { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+.badge--clear { color: var(--guard); background: rgba(26,174,111,.12); }
+.badge--suspect { color: var(--suspect); background: rgba(245,165,36,.12); }
+.badge--critical { color: #fff; background: var(--critical); }
+.tile__video { position: relative; background: #000; aspect-ratio: 16/10; }
+.tile__video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile__offline { display: grid; place-items: center; height: 100%; color: var(--muted); padding: 12px; text-align: center; }
+.tile__hud { position: absolute; bottom: 0; left: 0; right: 0; display: flex; gap: 14px;
+  padding: 6px 10px; background: linear-gradient(transparent, rgba(11,18,32,.85)); color: var(--muted); }
+
+/* Signature element: per-signal threat meters */
+.tile__meters { padding: 8px 12px 12px; display: grid; gap: 5px; }
+.meter { display: grid; grid-template-columns: 110px 1fr 38px; align-items: center; gap: 8px; }
+.meter__label { color: var(--muted); font-size: 11px; }
+.meter__track { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.meter__fill { display: block; height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--guard) 0%, var(--suspect) 55%, var(--critical) 100%);
+  background-size: 240px 100%; transition: width .35s ease; }
+.meter__val { color: var(--muted); text-align: right; }
+
+/* Rail: incidents + map */
+.rail { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rail__title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; margin: 6px 0 0;
+  text-transform: uppercase; letter-spacing: 1.4px; color: var(--muted); }
+.rail__note { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0;
+  border-left: 2px solid var(--guard); padding-left: 10px; }
+.rail__list { display: flex; flex-direction: column; gap: 10px; max-height: 46vh; overflow-y: auto; }
+
+.incident { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--critical);
+  border-radius: 8px; padding: 10px 12px; display: grid; gap: 6px; }
+.incident--confirmed { border-left-color: var(--guard); }
+.incident--dismissed { border-left-color: var(--line); opacity: .6; }
+.incident__row { display: flex; justify-content: space-between; align-items: baseline; }
+.incident__kind { font-weight: 600; }
+.incident__time, .incident__meta { color: var(--muted); }
+.incident__evidence { color: var(--station); font-size: 12px; text-decoration: none; }
+.incident__evidence:hover { text-decoration: underline; }
+.incident__actions { display: flex; gap: 8px; }
+.btn { border: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; font-size: 12px; }
+.btn--confirm { background: var(--guard); color: #05130C; }
+.btn--confirm:hover { filter: brightness(1.1); }
+.btn--dismiss { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+.btn:disabled { opacity: .5; cursor: wait; }
+.incident__status { color: var(--muted); }
+
+.map { height: 260px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); }
+.empty { color: var(--muted); padding: 20px; text-align: center; border: 1px dashed var(--line); border-radius: 8px; }
